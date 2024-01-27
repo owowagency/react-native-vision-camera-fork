@@ -1,9 +1,6 @@
 package com.mrousavy.camera.core
 
 import android.content.Context
-import android.media.MediaCodec
-import android.media.MediaRecorder
-import android.os.Build
 import android.util.Log
 import android.util.Size
 import android.view.Surface
@@ -36,68 +33,22 @@ class RecordingSession(
 
   data class Video(val path: String, val durationMs: Long, val size: Size)
 
+  private val outputPath = File.createTempFile("mrousavy", options.fileType.toExtension(), context.cacheDir)
+
   private val bitRate = getBitRate()
-  private val recorder: MediaRecorder
-  private val outputFile: File
+  private val recordingManager = ChunkedRecordingManager.fromParams(
+    size, enableAudio, fps, orientation, options, outputPath
+  )
+  private val recorder: ChunkedRecorder = ChunkedRecorder(recordingManager)
   private var startTime: Long? = null
-  val surface: Surface = MediaCodec.createPersistentInputSurface()
-
-  // TODO: Implement HDR
-  init {
-    outputFile = FileUtils.createTempFile(context, options.fileType.toExtension())
-
-    Log.i(TAG, "Creating RecordingSession for ${outputFile.absolutePath}")
-
-    recorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) MediaRecorder(context) else MediaRecorder()
-
-    if (enableAudio) recorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER)
-    recorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
-
-    recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-
-    recorder.setOutputFile(outputFile.absolutePath)
-    recorder.setVideoEncodingBitRate(bitRate)
-    recorder.setVideoSize(size.height, size.width)
-    recorder.setMaxFileSize(getMaxFileSize())
-    if (fps != null) recorder.setVideoFrameRate(fps)
-
-    Log.i(TAG, "Using ${options.videoCodec} Video Codec at ${bitRate / 1_000_000.0} Mbps..")
-    recorder.setVideoEncoder(options.videoCodec.toVideoEncoder())
-    if (enableAudio) {
-      Log.i(TAG, "Adding Audio Channel..")
-      recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-      recorder.setAudioEncodingBitRate(AUDIO_BIT_RATE)
-      recorder.setAudioSamplingRate(AUDIO_SAMPLING_RATE)
-      recorder.setAudioChannels(AUDIO_CHANNELS)
+  val surface: Surface
+    get() {
+      return recordingManager.surface
     }
-    recorder.setInputSurface(surface)
-    // recorder.setOrientationHint(orientation.toDegrees())
-
-    recorder.setOnErrorListener { _, what, extra ->
-      Log.e(TAG, "MediaRecorder Error: $what ($extra)")
-      stop()
-      val name = when (what) {
-        MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN -> "unknown"
-        MediaRecorder.MEDIA_ERROR_SERVER_DIED -> "server-died"
-        else -> "unknown"
-      }
-      onError(RecorderError(name, extra))
-    }
-    recorder.setOnInfoListener { _, what, extra ->
-      Log.i(TAG, "MediaRecorder Info: $what ($extra)")
-      if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
-        onError(InsufficientStorageError())
-      }
-    }
-
-    Log.i(TAG, "Created $this!")
-  }
 
   fun start() {
     synchronized(this) {
       Log.i(TAG, "Starting RecordingSession..")
-      recorder.prepare()
-      recorder.start()
       startTime = System.currentTimeMillis()
     }
   }
@@ -106,29 +57,28 @@ class RecordingSession(
     synchronized(this) {
       Log.i(TAG, "Stopping RecordingSession..")
       try {
-        recorder.stop()
-        recorder.release()
+        recorder.sendShutdown()
       } catch (e: Error) {
         Log.e(TAG, "Failed to stop MediaRecorder!", e)
       }
 
       val stopTime = System.currentTimeMillis()
       val durationMs = stopTime - (startTime ?: stopTime)
-      callback(Video(outputFile.absolutePath, durationMs, size))
+      //callback(Video(outputFile.absolutePath, durationMs, size))
     }
   }
 
   fun pause() {
     synchronized(this) {
       Log.i(TAG, "Pausing Recording Session..")
-      recorder.pause()
+      // TODO: Implement pausing
     }
   }
 
   fun resume() {
     synchronized(this) {
       Log.i(TAG, "Resuming Recording Session..")
-      recorder.resume()
+      // TODO: Implement pausing
     }
   }
 
@@ -160,5 +110,9 @@ class RecordingSession(
     val audio = if (enableAudio) "with audio" else "without audio"
     return "${size.width} x ${size.height} @ $fps FPS ${options.videoCodec} ${options.fileType} " +
       "$orientation ${bitRate / 1_000_000.0} Mbps RecordingSession ($audio)"
+  }
+
+  fun onFrame() {
+    recorder.sendFrameAvailable()
   }
 }

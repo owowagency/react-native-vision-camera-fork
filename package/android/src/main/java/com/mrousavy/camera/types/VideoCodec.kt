@@ -1,6 +1,7 @@
 package com.mrousavy.camera.types
 
 import android.media.MediaRecorder
+import android.media.MediaFormat
 
 enum class VideoCodec(override val unionValue: String) : JSUnionValue {
   H264("h264"),
@@ -10,6 +11,12 @@ enum class VideoCodec(override val unionValue: String) : JSUnionValue {
     when (this) {
       H264 -> MediaRecorder.VideoEncoder.H264
       H265 -> MediaRecorder.VideoEncoder.HEVC
+    }
+
+  fun toMimeType(): String =
+    when (this) {
+      H264 -> MediaFormat.MIMETYPE_VIDEO_AVC
+      H265 -> MediaFormat.MIMETYPE_VIDEO_HEVC
     }
 
   companion object : JSUnionValue.Companion<VideoCodec> {

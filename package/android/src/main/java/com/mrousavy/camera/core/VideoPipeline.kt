@@ -152,6 +152,8 @@ class VideoPipeline(
 
       // 5. Draw it with applied rotation/mirroring
       onFrame(transformMatrix)
+
+      recording?.onFrame()
     }
   }
 
