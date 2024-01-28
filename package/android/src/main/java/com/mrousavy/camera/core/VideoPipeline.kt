@@ -91,7 +91,7 @@ class VideoPipeline(
         imageWriter = ImageWriter.newInstance(glSurface, MAX_IMAGES)
       }
       imageReader!!.setOnImageAvailableListener({ reader ->
-        Log.i(TAG, "ImageReader::onImageAvailable!")
+        // Log.i(TAG, "ImageReader::onImageAvailable!")s
         val image = reader.acquireNextImage() ?: return@setOnImageAvailableListener
 
         // TODO: Get correct orientation and isMirrored
@@ -153,7 +153,8 @@ class VideoPipeline(
       // 5. Draw it with applied rotation/mirroring
       onFrame(transformMatrix)
 
-      recording?.onFrame()
+      // 6. Notify the recording session.
+      recordingSession?.onFrame()
     }
   }
 

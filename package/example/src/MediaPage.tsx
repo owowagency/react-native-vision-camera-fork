@@ -74,7 +74,7 @@ export function MediaPage({ navigation, route }: Props): React.ReactElement {
     }
   }, [path, type])
 
-  const source = useMemo(() => ({ uri: `file://${path}` }), [path])
+  const source = useMemo(() => ({ uri: `file://${path}/1.mp4` }), [path])
 
   const screenStyle = useMemo(() => ({ opacity: hasMediaLoaded ? 1 : 0 }), [hasMediaLoaded])
 

@@ -10,7 +10,10 @@ import com.mrousavy.camera.types.Orientation
 import com.mrousavy.camera.types.RecordVideoOptions
 import com.mrousavy.camera.utils.FileUtils
 import java.io.File
-
+import android.os.Environment
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 class RecordingSession(
   context: Context,
   val cameraId: String,
@@ -33,23 +36,34 @@ class RecordingSession(
 
   data class Video(val path: String, val durationMs: Long, val size: Size)
 
-  private val outputPath = File.createTempFile("mrousavy", options.fileType.toExtension(), context.cacheDir)
+  private val outputPath = run {
+    val videoDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+    val sdf = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.US)
+    val videoFileName = "VID_${sdf.format(Date())}"
+    File(videoDir!!, videoFileName)
+  }
 
   private val bitRate = getBitRate()
-  private val recordingManager = ChunkedRecordingManager.fromParams(
-    size, enableAudio, fps, orientation, options, outputPath
+  private val recorder = ChunkedRecordingManager.fromParams(
+    size,
+    enableAudio,
+    fps,
+    orientation,
+    bitRate,
+    options,
+    outputPath
   )
-  private val recorder: ChunkedRecorder = ChunkedRecorder(recordingManager)
   private var startTime: Long? = null
   val surface: Surface
     get() {
-      return recordingManager.surface
+      return recorder.surface
     }
 
   fun start() {
     synchronized(this) {
       Log.i(TAG, "Starting RecordingSession..")
       startTime = System.currentTimeMillis()
+      recorder.start()
     }
   }
 
@@ -57,14 +71,15 @@ class RecordingSession(
     synchronized(this) {
       Log.i(TAG, "Stopping RecordingSession..")
       try {
-        recorder.sendShutdown()
+        recorder.finish()
       } catch (e: Error) {
         Log.e(TAG, "Failed to stop MediaRecorder!", e)
       }
 
       val stopTime = System.currentTimeMillis()
       val durationMs = stopTime - (startTime ?: stopTime)
-      //callback(Video(outputFile.absolutePath, durationMs, size))
+      Log.i(TAG, "Finished recording video at $outputPath")
+      callback(Video(outputPath.absolutePath, durationMs, size))
     }
   }
 
@@ -113,6 +128,5 @@ class RecordingSession(
   }
 
   fun onFrame() {
-    recorder.sendFrameAvailable()
   }
 }

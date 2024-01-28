@@ -1,7 +1,7 @@
 package com.mrousavy.camera.types
 
-import android.media.MediaRecorder
 import android.media.MediaFormat
+import android.media.MediaRecorder
 
 enum class VideoCodec(override val unionValue: String) : JSUnionValue {
   H264("h264"),
