@@ -8,6 +8,14 @@ enum class Orientation(override val unionValue: String) : JSUnionValue {
   PORTRAIT_UPSIDE_DOWN("portrait-upside-down"),
   LANDSCAPE_LEFT("landscape-left");
 
+  fun isLandscape(): Boolean =
+    when (this) {
+      PORTRAIT -> false
+      PORTRAIT_UPSIDE_DOWN -> false
+      LANDSCAPE_LEFT -> true
+      LANDSCAPE_RIGHT -> true
+    }
+
   fun toDegrees(): Int =
     when (this) {
       PORTRAIT -> 0
