@@ -12,7 +12,6 @@ import com.mrousavy.camera.types.Orientation
 import com.mrousavy.camera.types.RecordVideoOptions
 import java.io.File
 import java.nio.ByteBuffer
-import kotlinx.coroutines.*
 
 class ChunkedRecordingManager(private val encoder: MediaCodec, private val outputDirectory: File, private val orientationHint: Int, private val iFrameInterval: Int) :
   MediaCodec.Callback() {
@@ -23,22 +22,20 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
       size: Size,
       enableAudio: Boolean,
       fps: Int? = null,
-      orientation: Orientation,
+      cameraOrientation: Orientation,
       bitRate: Int,
       options: RecordVideoOptions,
       outputDirectory: File,
       iFrameInterval: Int = 3
     ): ChunkedRecordingManager {
       val mimeType = options.videoCodec.toMimeType()
-      var width = size.width
-      var height = size.height
-
-      val orientationDegrees = orientation.toDegrees()
-
-      if (orientationDegrees == 90 || orientationDegrees == 270) {
-        width = size.height
-        height = size.width
+      val orientationDegrees = cameraOrientation.toDegrees()
+      val (width, height) = if (cameraOrientation.isLandscape()) {
+        size.height to size.width
+      } else {
+        size.width to size.height
       }
+
       val format = MediaFormat.createVideoFormat(mimeType, width, height)
 
       val codec = MediaCodec.createEncoderByType(mimeType)
@@ -56,11 +53,11 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
       format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, iFrameInterval)
       format.setInteger(MediaFormat.KEY_BIT_RATE, bitRate)
 
-      Log.i(TAG, "Video Format: $format")
+      Log.i(TAG, "Video Format: $format, orientation $cameraOrientation")
       // Create a MediaCodec encoder, and configure it with our format.  Get a Surface
       // we can use for input and wrap it with a class that handles the EGL work.
       codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
-      return ChunkedRecordingManager(codec, outputDirectory, orientationDegrees, iFrameInterval)
+      return ChunkedRecordingManager(codec, outputDirectory, 0, iFrameInterval)
     }
   }
 

@@ -21,7 +21,7 @@ class RecordingSession(
   private val enableAudio: Boolean,
   private val fps: Int? = null,
   private val hdr: Boolean = false,
-  private val orientation: Orientation,
+  private val cameraOrientation: Orientation,
   private val options: RecordVideoOptions,
   private val callback: (video: Video) -> Unit,
   private val onError: (error: CameraError) -> Unit
@@ -48,7 +48,7 @@ class RecordingSession(
     size,
     enableAudio,
     fps,
-    orientation,
+    cameraOrientation,
     bitRate,
     options,
     outputPath
@@ -124,7 +124,7 @@ class RecordingSession(
   override fun toString(): String {
     val audio = if (enableAudio) "with audio" else "without audio"
     return "${size.width} x ${size.height} @ $fps FPS ${options.videoCodec} ${options.fileType} " +
-      "$orientation ${bitRate / 1_000_000.0} Mbps RecordingSession ($audio)"
+      "$cameraOrientation ${bitRate / 1_000_000.0} Mbps RecordingSession ($audio)"
   }
 
   fun onFrame() {
