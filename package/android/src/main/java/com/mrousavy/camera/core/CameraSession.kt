@@ -54,6 +54,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.io.File
 
 class CameraSession(private val context: Context, private val cameraManager: CameraManager, private val callback: Callback) :
   CameraManager.AvailabilityCallback(),
@@ -640,7 +641,8 @@ class CameraSession(private val context: Context, private val cameraManager: Cam
         orientation,
         options,
         callback,
-        onError
+        onError,
+        this.callback,
       )
       recording.start()
       this.recording = recording
@@ -724,6 +726,7 @@ class CameraSession(private val context: Context, private val cameraManager: Cam
     fun onInitialized()
     fun onStarted()
     fun onStopped()
+    fun onVideoChunkReady(filepath: File, index: Int)
     fun onCodeScanned(codes: List<Barcode>, scannerFrame: CodeScannerFrame)
   }
 }

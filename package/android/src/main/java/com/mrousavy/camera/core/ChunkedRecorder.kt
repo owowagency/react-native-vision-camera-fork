@@ -13,12 +13,13 @@ import com.mrousavy.camera.types.RecordVideoOptions
 import java.io.File
 import java.nio.ByteBuffer
 
-class ChunkedRecordingManager(private val encoder: MediaCodec, private val outputDirectory: File, private val orientationHint: Int, private val iFrameInterval: Int) :
+class ChunkedRecordingManager(private val encoder: MediaCodec, private val outputDirectory: File, private val orientationHint: Int, private val iFrameInterval: Int, private val callbacks: CameraSession.Callback) :
   MediaCodec.Callback() {
   companion object {
     private const val TAG = "ChunkedRecorder"
 
     fun fromParams(
+      callbacks: CameraSession.Callback,
       size: Size,
       enableAudio: Boolean,
       fps: Int? = null,
@@ -57,7 +58,7 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
       // Create a MediaCodec encoder, and configure it with our format.  Get a Surface
       // we can use for input and wrap it with a class that handles the EGL work.
       codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
-      return ChunkedRecordingManager(codec, outputDirectory, 0, iFrameInterval)
+      return ChunkedRecordingManager(codec, outputDirectory, 0, iFrameInterval, callbacks)
     }
   }
 
@@ -79,7 +80,7 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
   }
 
   // Muxer specific
-  private class MuxerContext(val muxer: MediaMuxer, startTimeUs: Long, encodedFormat: MediaFormat) {
+  private class MuxerContext(val muxer: MediaMuxer, val filepath: File, val chunkIndex: Int, startTimeUs: Long, encodedFormat: MediaFormat) {
     val videoTrack: Int = muxer.addTrack(encodedFormat)
     val startTimeUs: Long = startTimeUs
 
@@ -97,7 +98,10 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
   private var muxerContext: MuxerContext? = null
 
   private fun createNextMuxer(bufferInfo: BufferInfo) {
-    muxerContext?.finish()
+    muxerContext?.let {
+      it.finish()
+      this.callbacks.onVideoChunkReady(it.filepath, it.chunkIndex)
+    }
     chunkIndex++
 
     val newFileName = "$chunkIndex.mp4"
@@ -109,7 +113,7 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
     )
     muxer.setOrientationHint(orientationHint)
     muxerContext = MuxerContext(
-      muxer, bufferInfo.presentationTimeUs, this.encodedFormat!!
+      muxer, newOutputFile, chunkIndex, bufferInfo.presentationTimeUs, this.encodedFormat!!
     )
   }
 

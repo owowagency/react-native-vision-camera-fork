@@ -25,6 +25,7 @@ import com.mrousavy.camera.types.Torch
 import com.mrousavy.camera.types.VideoStabilizationMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.io.File
 
 //
 // TODOs for the CameraView which are currently too hard to implement either because of CameraX' limitations, or my brain capacity.
@@ -263,6 +264,10 @@ class CameraView(context: Context) :
 
   override fun onStopped() {
     invokeOnStopped()
+  }
+
+  override fun onVideoChunkReady(filepath: File, index: Int) {
+    invokeOnChunkReady(filepath, index)
   }
 
   override fun onCodeScanned(codes: List<Barcode>, scannerFrame: CodeScannerFrame) {
