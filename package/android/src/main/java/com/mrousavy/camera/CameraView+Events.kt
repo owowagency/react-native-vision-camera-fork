@@ -11,6 +11,7 @@ import com.mrousavy.camera.core.CodeScannerFrame
 import com.mrousavy.camera.core.UnknownCameraError
 import com.mrousavy.camera.core.code
 import com.mrousavy.camera.types.CodeType
+import java.io.File
 
 fun CameraView.invokeOnInitialized() {
   Log.i(CameraView.TAG, "invokeOnInitialized()")
@@ -31,6 +32,15 @@ fun CameraView.invokeOnStopped() {
 
   val reactContext = context as ReactContext
   reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, "cameraStopped", null)
+}
+
+fun CameraView.invokeOnChunkReady(filepath: File, index: Int) {
+  Log.e(CameraView.TAG, "invokeOnError(...):")
+  val event = Arguments.createMap()
+  event.putInt("index", index)
+  event.putString("filepath", filepath.toString())
+  val reactContext = context as ReactContext
+  reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, "onVideoChunkReady", event)
 }
 
 fun CameraView.invokeOnError(error: Throwable) {

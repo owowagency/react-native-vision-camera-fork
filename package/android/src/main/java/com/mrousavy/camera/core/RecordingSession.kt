@@ -24,7 +24,8 @@ class RecordingSession(
   private val cameraOrientation: Orientation,
   private val options: RecordVideoOptions,
   private val callback: (video: Video) -> Unit,
-  private val onError: (error: CameraError) -> Unit
+  private val onError: (error: CameraError) -> Unit,
+  private val allCallbacks: CameraSession.Callback,
 ) {
   companion object {
     private const val TAG = "RecordingSession"
@@ -45,6 +46,7 @@ class RecordingSession(
 
   private val bitRate = getBitRate()
   private val recorder = ChunkedRecordingManager.fromParams(
+    allCallbacks,
     size,
     enableAudio,
     fps,
