@@ -28,7 +28,7 @@ interface OnErrorEvent {
 }
 interface OnVideoChunkReadyEvent {
 	filepath: string
-	index: int
+	index: number
 }
 type NativeCameraViewProps = Omit<CameraProps, 'device' | 'onInitialized' | 'onError' | 'frameProcessor' | 'codeScanner'> & {
 	cameraId: string
