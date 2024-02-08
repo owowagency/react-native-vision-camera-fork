@@ -8,6 +8,7 @@ class RecordVideoOptions(map: ReadableMap) {
   var videoCodec = VideoCodec.H264
   var videoBitRateOverride: Double? = null
   var videoBitRateMultiplier: Double? = null
+  var orientation: Orientation? = null
 
   init {
     if (map.hasKey("fileType")) {
@@ -24,6 +25,9 @@ class RecordVideoOptions(map: ReadableMap) {
     }
     if (map.hasKey("videoBitRateMultiplier")) {
       videoBitRateMultiplier = map.getDouble("videoBitRateMultiplier")
+    }
+    if (map.hasKey("orientation")) {
+      orientation = Orientation.fromUnionValue(map.getString("orientation"))
     }
   }
 }

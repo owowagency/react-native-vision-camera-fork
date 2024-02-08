@@ -27,10 +27,11 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
       bitRate: Int,
       options: RecordVideoOptions,
       outputDirectory: File,
-      iFrameInterval: Int = 3
+      iFrameInterval: Int = 5
     ): ChunkedRecordingManager {
       val mimeType = options.videoCodec.toMimeType()
-      val orientationDegrees = cameraOrientation.toDegrees()
+      val cameraOrientationDegrees = cameraOrientation.toDegrees()
+      val recordingOrientationDegrees = (options.orientation ?: Orientation.PORTRAIT).toDegrees();
       val (width, height) = if (cameraOrientation.isLandscape()) {
         size.height to size.width
       } else {
@@ -54,11 +55,13 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
       format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, iFrameInterval)
       format.setInteger(MediaFormat.KEY_BIT_RATE, bitRate)
 
-      Log.i(TAG, "Video Format: $format, orientation $cameraOrientation")
+      Log.d(TAG, "Video Format: $format, camera orientation $cameraOrientationDegrees, recordingOrientation: $recordingOrientationDegrees")
       // Create a MediaCodec encoder, and configure it with our format.  Get a Surface
       // we can use for input and wrap it with a class that handles the EGL work.
       codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
-      return ChunkedRecordingManager(codec, outputDirectory, 0, iFrameInterval, callbacks)
+      return ChunkedRecordingManager(
+        codec, outputDirectory, recordingOrientationDegrees, iFrameInterval, callbacks
+      )
     }
   }
 
