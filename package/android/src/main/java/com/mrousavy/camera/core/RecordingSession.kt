@@ -23,6 +23,7 @@ class RecordingSession(
   private val hdr: Boolean = false,
   private val cameraOrientation: Orientation,
   private val options: RecordVideoOptions,
+  private val filePath: String,
   private val callback: (video: Video) -> Unit,
   private val onError: (error: CameraError) -> Unit,
   private val allCallbacks: CameraSession.Callback,
@@ -37,12 +38,7 @@ class RecordingSession(
 
   data class Video(val path: String, val durationMs: Long, val size: Size)
 
-  private val outputPath = run {
-    val videoDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-    val sdf = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.US)
-    val videoFileName = "VID_${sdf.format(Date())}"
-    File(videoDir!!, videoFileName)
-  }
+  private val outputPath: File = File(filePath)
 
   private val bitRate = getBitRate()
   private val recorder = ChunkedRecordingManager.fromParams(

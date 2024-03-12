@@ -621,6 +621,7 @@ class CameraSession(private val context: Context, private val cameraManager: Cam
   suspend fun startRecording(
     enableAudio: Boolean,
     options: RecordVideoOptions,
+    filePath: String,
     callback: (video: RecordingSession.Video) -> Unit,
     onError: (error: CameraError) -> Unit
   ) {
@@ -640,6 +641,7 @@ class CameraSession(private val context: Context, private val cameraManager: Cam
         videoOutput.enableHdr,
         orientation,
         options,
+        filePath,
         callback,
         onError,
         this.callback,
