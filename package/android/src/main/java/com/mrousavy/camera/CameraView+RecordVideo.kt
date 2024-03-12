@@ -13,7 +13,7 @@ import com.mrousavy.camera.types.RecordVideoOptions
 import com.mrousavy.camera.utils.makeErrorMap
 import java.util.*
 
-suspend fun CameraView.startRecording(options: RecordVideoOptions, onRecordCallback: Callback) {
+suspend fun CameraView.startRecording(options: RecordVideoOptions, filePath: String, onRecordCallback: Callback) {
   // check audio permission
   if (audio == true) {
     if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -33,7 +33,7 @@ suspend fun CameraView.startRecording(options: RecordVideoOptions, onRecordCallb
     val errorMap = makeErrorMap(error.code, error.message)
     onRecordCallback(null, errorMap)
   }
-  cameraSession.startRecording(audio == true, options, callback, onError)
+  cameraSession.startRecording(audio == true, options, filePath, callback, onError)
 }
 
 @SuppressLint("RestrictedApi")
