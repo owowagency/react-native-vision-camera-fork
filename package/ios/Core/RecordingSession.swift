@@ -29,6 +29,7 @@ class RecordingSession {
   private let assetWriter: AVAssetWriter
   private var audioWriter: AVAssetWriterInput?
   private var videoWriter: AVAssetWriterInput?
+  private let recorder: ChunkedRecorder
   private let completionHandler: (RecordingSession, AVAssetWriter.Status, Error?) -> Void
 
   private var startTimestamp: CMTime?
@@ -49,7 +50,8 @@ class RecordingSession {
    Gets the file URL of the recorded video.
    */
   var url: URL {
-    return assetWriter.outputURL
+    // FIXME:
+    return recorder.outputURL
   }
 
   /**
@@ -76,8 +78,24 @@ class RecordingSession {
     completionHandler = completion
 
     do {
-      assetWriter = try AVAssetWriter(outputURL: url, fileType: fileType)
+      recorder = try ChunkedRecorder(url: url.deletingLastPathComponent())
+      assetWriter = AVAssetWriter(contentType: UTType(fileType.rawValue)!)
       assetWriter.shouldOptimizeForNetworkUse = false
+      assetWriter.outputFileTypeProfile = .mpeg4AppleHLS
+      assetWriter.preferredOutputSegmentInterval = CMTime(seconds: 6, preferredTimescale: 1)
+      
+      /*
+        Apple HLS fMP4 does not have an Edit List Box ('elst') in an initialization segment to remove
+        audio priming duration which advanced audio formats like AAC have, since the sample tables
+        are empty.  As a result, if the output PTS of the first non-fully trimmed audio sample buffer is
+        kCMTimeZero, the audio samples’ presentation time in segment files may be pushed forward by the
+        audio priming duration.  This may cause audio and video to be out of sync.  You should add a time
+        offset to all samples to avoid this situation.
+      */
+      let startTimeOffset = CMTime(value: 10, timescale: 1)
+      assetWriter.initialSegmentStartTime = startTimeOffset
+      
+      assetWriter.delegate = recorder
     } catch let error as NSError {
       throw CameraError.capture(.createRecorderError(message: error.description))
     }

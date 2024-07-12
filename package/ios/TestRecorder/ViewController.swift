@@ -39,7 +39,7 @@ class ViewController: UIViewController {
             
             cameraView.photo = true
             cameraView.video = true
-            cameraView.audio = true
+            cameraView.audio = false
             cameraView.isActive = true
             cameraView.cameraId = getCameraDeviceId() as NSString?
             cameraView.didSetProps([])
@@ -90,6 +90,7 @@ class ViewController: UIViewController {
         } else {
             cameraView.startRecording(
                 options: [
+                    "fileType": "mp4",
                     "videoCodec": "h265",
                 ]) { callback in
                     print("callback", callback)

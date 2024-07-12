@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		B3AF8E862C410FB700CC198C /* ReactStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = B3AF8E852C410FB700CC198C /* ReactStubs.m */; };
+		B3AF8E882C41159300CC198C /* ChunkedRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AF8E872C41159300CC198C /* ChunkedRecorder.swift */; };
+		B3AF8E892C41159300CC198C /* ChunkedRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AF8E872C41159300CC198C /* ChunkedRecorder.swift */; };
 		B3EF9F0D2C3FBD8300832EE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EF9F0C2C3FBD8300832EE7 /* AppDelegate.swift */; };
 		B3EF9F0F2C3FBD8300832EE7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EF9F0E2C3FBD8300832EE7 /* SceneDelegate.swift */; };
 		B3EF9F112C3FBD8300832EE7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EF9F102C3FBD8300832EE7 /* ViewController.swift */; };
@@ -165,6 +167,7 @@
 		B3AF8E832C410FB600CC198C /* TestRecorder-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestRecorder-Bridging-Header.h"; sourceTree = "<group>"; };
 		B3AF8E842C410FB700CC198C /* ReactStubs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReactStubs.h; sourceTree = "<group>"; };
 		B3AF8E852C410FB700CC198C /* ReactStubs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReactStubs.m; sourceTree = "<group>"; };
+		B3AF8E872C41159300CC198C /* ChunkedRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChunkedRecorder.swift; sourceTree = "<group>"; };
 		B3EF9F0A2C3FBD8300832EE7 /* TestRecorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestRecorder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3EF9F0C2C3FBD8300832EE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B3EF9F0E2C3FBD8300832EE7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -364,6 +367,7 @@
 				B88103E22AD7065C0087F063 /* CameraSessionDelegate.swift */,
 				B83D5EE629377117000AFD2F /* PreviewView.swift */,
 				B8DB3BC9263DC4D8004C18D7 /* RecordingSession.swift */,
+				B3AF8E872C41159300CC198C /* ChunkedRecorder.swift */,
 				B887515C25E0102000DB86D6 /* PhotoCaptureDelegate.swift */,
 				B84760DE2608F57D004C3180 /* CameraQueues.swift */,
 				B887518325E0102000DB86D6 /* CameraError.swift */,
@@ -636,6 +640,7 @@
 				B88977BE2B556DBA0095C92C /* AVCaptureDevice+minFocusDistance.swift in Sources */,
 				B80175EC2ABDEBD000E7DE90 /* ResizeMode.swift in Sources */,
 				B887519F25E0102000DB86D6 /* AVCaptureDevice.DeviceType+physicalDeviceDescriptor.swift in Sources */,
+				B3AF8E882C41159300CC198C /* ChunkedRecorder.swift in Sources */,
 				B88685ED2AD6A5E600E93869 /* CameraSession+CodeScanner.swift in Sources */,
 				B8207AAD2B0E5DD70002990F /* AVCaptureSession+synchronizeBuffer.swift in Sources */,
 				B8D22CDC2642DB4D00234472 /* AVAssetWriterInputPixelBufferAdaptor+initWithVideoSettings.swift in Sources */,
@@ -672,6 +677,7 @@
 				B3EF9F6A2C3FC46900832EE7 /* Promise.swift in Sources */,
 				B3EF9F4B2C3FC31E00832EE7 /* AVAssetWriterInputPixelBufferAdaptor+initWithVideoSettings.swift in Sources */,
 				B3EF9F5E2C3FC43000832EE7 /* AVCapturePhotoOutput.QualityPrioritization+descriptor.swift in Sources */,
+				B3AF8E892C41159300CC198C /* ChunkedRecorder.swift in Sources */,
 				B3EF9F5F2C3FC43000832EE7 /* AVAuthorizationStatus+descriptor.swift in Sources */,
 				B3EF9F602C3FC43000832EE7 /* AVCaptureDevice.FlashMode+descriptor.swift in Sources */,
 				B3EF9F612C3FC43000832EE7 /* AVFileType+descriptor.swift in Sources */,
