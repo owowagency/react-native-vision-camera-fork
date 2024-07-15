@@ -62,6 +62,7 @@ public final class CameraView: UIView, CameraSessionDelegate {
   @objc var onStarted: RCTDirectEventBlock?
   @objc var onStopped: RCTDirectEventBlock?
   @objc var onViewReady: RCTDirectEventBlock?
+  @objc var onInitReady: RCTDirectEventBlock?
   @objc var onVideoChunkReady: RCTDirectEventBlock?
   @objc var onCodeScanned: RCTDirectEventBlock?
   // zoom
@@ -340,14 +341,15 @@ public final class CameraView: UIView, CameraSessionDelegate {
   func onVideoChunkReady(chunk: ChunkedRecorder.Chunk) {
     ReactLogger.log(level: .info, message: "Chunk ready: \(chunk)")
     
-    guard let onVideoChunkReady = onVideoChunkReady else {
+    guard let onVideoChunkReady, let onInitReady else {
       return
     }
     
     switch chunk.type {
     case .initialization:
-      // FIXME: send initialization segment
-      return
+      onInitReady([
+        "filepath": chunk.url.path,
+      ])
     case .data(index: let index):
       onVideoChunkReady([
         "filepath": chunk.url.path,
