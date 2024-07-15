@@ -33,6 +33,14 @@ extension CameraSession {
       }
 
       let enableAudio = self.configuration?.audio != .disabled
+      
+      // Callback for when new chunks are ready
+      let onChunkReady: (ChunkedRecorder.Chunk) -> Void = { chunk in
+        guard let delegate = self.delegate else {
+          return
+        }
+        delegate.onVideoChunkReady(chunk: chunk)
+      }
 
       // Callback for when the recording ends
       let onFinish = { (recordingSession: RecordingSession, status: AVAssetWriter.Status, error: Error?) in
@@ -89,6 +97,7 @@ extension CameraSession {
         // Create RecordingSession for the temp file
         let recordingSession = try RecordingSession(url: tempURL,
                                                     fileType: options.fileType,
+                                                    onChunkReady: onChunkReady,
                                                     completion: onFinish)
 
         // Init Audio + Activate Audio Session (optional)

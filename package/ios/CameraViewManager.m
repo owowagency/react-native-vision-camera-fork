@@ -55,6 +55,7 @@ RCT_EXPORT_VIEW_PROPERTY(onInitialized, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onStarted, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onStopped, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onViewReady, RCTDirectEventBlock);
+RCT_EXPORT_VIEW_PROPERTY(onVideoChunkReady, RCTDirectEventBlock);
 // Code Scanner
 RCT_EXPORT_VIEW_PROPERTY(codeScannerOptions, NSDictionary);
 RCT_EXPORT_VIEW_PROPERTY(onCodeScanned, RCTDirectEventBlock);

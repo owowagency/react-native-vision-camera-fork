@@ -34,6 +34,10 @@ protocol CameraSessionDelegate: AnyObject {
    */
   func onFrame(sampleBuffer: CMSampleBuffer)
   /**
+   Called whenever a new video chunk is available
+   */
+  func onVideoChunkReady(chunk: ChunkedRecorder.Chunk)
+  /**
    Called whenever a QR/Barcode has been scanned. Only if the CodeScanner Output is enabled
    */
   func onCodeScanned(codes: [CameraSession.Code], scannerFrame: CameraSession.CodeScannerFrame)
