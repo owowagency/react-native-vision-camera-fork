@@ -12,14 +12,24 @@ import AVFoundation
 
 class ChunkedRecorder: NSObject {
   
+  enum ChunkType {
+    case initialization
+    case data(index: UInt64)
+  }
+
+  struct Chunk {
+    let url: URL
+    let type: ChunkType
+  }
+  
   let outputURL: URL
+  let onChunkReady: ((Chunk) -> Void)
   
-  private var initSegment: Data?
-  private var index: Int = 0
+  private var index: UInt64 = 0
   
-  init(url: URL) throws {
+  init(url: URL, onChunkReady: @escaping ((Chunk) -> Void)) throws {
     outputURL = url
-    
+    self.onChunkReady = onChunkReady
     guard FileManager.default.fileExists(atPath: outputURL.path) else {
       throw CameraError.unknown(message: "output directory does not exist at: \(outputURL.path)", cause: nil)
     }
@@ -44,27 +54,32 @@ extension ChunkedRecorder: AVAssetWriterDelegate {
     }
   }
   
-  private func saveInitSegment(_ data: Data) {     
-    initSegment = data
+  private func saveInitSegment(_ data: Data) {
+    let url = outputURL.appendingPathComponent("init.mp4")
+    save(data: data, url: url)
+    onChunkReady(url: url, type: .initialization)
   }
   
   private func saveSegment(_ data: Data) {
-    guard let initSegment else {
-      print("missing init segment")
-      return
+    defer {
+      index += 1
     }
-    
-    let file = String(format: "%06d.mp4", index)
-    index += 1
-    let url = outputURL.appendingPathComponent(file)
-    
+    let name = String(format: "%06d.mp4", index)
+    let url = outputURL.appendingPathComponent(name)
+    save(data: data, url: url)
+    onChunkReady(url: url, type: .data(index: index))
+  }
+  
+  private func save(data: Data, url: URL) {
     do {
-      let outputData = initSegment + data
-      try outputData.write(to: url)
-      print("writing", data.count, "to", url)
+      try data.write(to: url)
     } catch {
-      print("Error--->", error)
+      ReactLogger.log(level: .error, message: "Unable to write \(url): \(error.localizedDescription)")
     }
+  }
+  
+  private func onChunkReady(url: URL, type: ChunkType) {
+    onChunkReady(Chunk(url: url, type: type))
   }
   
 }

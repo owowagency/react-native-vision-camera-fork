@@ -78,7 +78,9 @@ class RecordingSession {
     completionHandler = completion
 
     do {
-      recorder = try ChunkedRecorder(url: url.deletingLastPathComponent())
+      recorder = try ChunkedRecorder(url: url.deletingLastPathComponent()) { segment in
+        ReactLogger.log(level: .info, message: "Chunk ready: \(segment)")
+      }
       assetWriter = AVAssetWriter(contentType: UTType(fileType.rawValue)!)
       assetWriter.shouldOptimizeForNetworkUse = false
       assetWriter.outputFileTypeProfile = .mpeg4AppleHLS
