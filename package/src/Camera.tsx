@@ -26,6 +26,9 @@ interface OnErrorEvent {
   message: string
   cause?: ErrorWithCause
 }
+interface OnInitReadyEvent {
+  filepath: string
+}
 interface OnVideoChunkReadyEvent {
   filepath: string
   index: number
@@ -39,6 +42,7 @@ type NativeCameraViewProps = Omit<CameraProps, 'device' | 'onInitialized' | 'onE
   onCodeScanned?: (event: NativeSyntheticEvent<OnCodeScannedEvent>) => void
   onStarted?: (event: NativeSyntheticEvent<void>) => void
   onStopped?: (event: NativeSyntheticEvent<void>) => void
+  onInitReady?: (event: NativeSyntheticEvent<OnInitReadyEvent>) => void
   onVideoChunkReady?: (event: NativeSyntheticEvent<OnVideoChunkReadyEvent>) => void
   onViewReady: () => void
 }
