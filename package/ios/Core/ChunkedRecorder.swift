@@ -25,7 +25,7 @@ class ChunkedRecorder: NSObject {
   let outputURL: URL
   let onChunkReady: ((Chunk) -> Void)
   
-  private var index: UInt64 = 0
+  private var chunkIndex: UInt64 = 0
   
   init(url: URL, onChunkReady: @escaping ((Chunk) -> Void)) throws {
     outputURL = url
@@ -61,13 +61,11 @@ extension ChunkedRecorder: AVAssetWriterDelegate {
   }
   
   private func saveSegment(_ data: Data) {
-    defer {
-      index += 1
-    }
-    let name = String(format: "%06d.mp4", index)
+    let name = "\(chunkIndex).mp4"
     let url = outputURL.appendingPathComponent(name)
     save(data: data, url: url)
-    onChunkReady(url: url, type: .data(index: index))
+    onChunkReady(url: url, type: .data(index: chunkIndex))
+    chunkIndex += 1
   }
   
   private func save(data: Data, url: URL) {
