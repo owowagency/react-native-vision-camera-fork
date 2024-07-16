@@ -10,7 +10,7 @@ import AVFoundation
 import Foundation
 
 struct RecordVideoOptions {
-  var fileType: AVFileType = .mov
+  var fileType: AVFileType = .mp4
   var flash: Torch = .off
   var codec: AVVideoCodecType?
   /**
