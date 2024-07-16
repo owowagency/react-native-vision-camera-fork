@@ -14,7 +14,7 @@ class ChunkedRecorder: NSObject {
   
   enum ChunkType {
     case initialization
-    case data(index: UInt64)
+    case data(index: UInt64, duration: CMTime?)
   }
 
   struct Chunk {
@@ -48,7 +48,7 @@ extension ChunkedRecorder: AVAssetWriterDelegate {
     case .initialization:
       saveInitSegment(segmentData)
     case .separable:
-      saveSegment(segmentData)
+      saveSegment(segmentData, report: segmentReport)
     @unknown default:
       fatalError("Unknown AVAssetSegmentType!")
     }
@@ -60,11 +60,16 @@ extension ChunkedRecorder: AVAssetWriterDelegate {
     onChunkReady(url: url, type: .initialization)
   }
   
-  private func saveSegment(_ data: Data) {
+  private func saveSegment(_ data: Data, report: AVAssetSegmentReport?) {
     let name = "\(chunkIndex).mp4"
     let url = outputURL.appendingPathComponent(name)
     save(data: data, url: url)
-    onChunkReady(url: url, type: .data(index: chunkIndex))
+    let duration = report?
+      .trackReports
+      .filter { $0.mediaType == .video }
+      .first?
+      .duration
+    onChunkReady(url: url, type: .data(index: chunkIndex, duration: duration))
     chunkIndex += 1
   }
   

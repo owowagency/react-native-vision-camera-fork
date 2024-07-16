@@ -351,11 +351,15 @@ public final class CameraView: UIView, CameraSessionDelegate {
       onInitReady([
         "filepath": chunk.url.path,
       ])
-    case .data(index: let index):
-      onVideoChunkReady([
+    case let .data(index: index, duration: duration):
+      var data: [String: Any] = [
         "filepath": chunk.url.path,
         "index": index,
-      ])
+      ]
+      if let duration {
+        data["duration"] = duration.seconds
+      }
+      onVideoChunkReady(data)
     }
   }
 
