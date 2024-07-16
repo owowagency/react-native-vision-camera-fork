@@ -33,6 +33,12 @@ class ViewController: UIViewController {
                 self.recordButton.isHidden = false
             }
         }
+        cameraView.onInitReady = { json in
+            print("onInitReady:", json ?? "nil")
+        }
+        cameraView.onVideoChunkReady = { json in
+            print("onVideoChunkReady:", json ?? "nil")
+        }
         
         Task { @MainActor in
             await requestAuthorizations()
