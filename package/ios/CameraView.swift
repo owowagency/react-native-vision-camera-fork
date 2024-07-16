@@ -342,6 +342,7 @@ public final class CameraView: UIView, CameraSessionDelegate {
     ReactLogger.log(level: .info, message: "Chunk ready: \(chunk)")
     
     guard let onVideoChunkReady, let onInitReady else {
+      ReactLogger.log(level: .warning, message: "Either onInitReady or onVideoChunkReady are not valid!")
       return
     }
     
