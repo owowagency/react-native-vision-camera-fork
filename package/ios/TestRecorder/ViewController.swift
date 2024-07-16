@@ -14,9 +14,14 @@ class ViewController: UIViewController {
   @IBOutlet weak var recordButton: UIButton!
   
   let cameraView = CameraView()
+  let filePath: String = {
+    NSTemporaryDirectory() + "TestRecorder"
+  }()
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    try? FileManager.default.removeItem(atPath: filePath)
     
     cameraView.translatesAutoresizingMaskIntoConstraints = false;
     view.insertSubview(cameraView, at: 0)
@@ -98,7 +103,8 @@ class ViewController: UIViewController {
         options: [
           "fileType": "mp4",
           "videoCodec": "h265",
-        ]) { callback in
+        ],
+        filePath: filePath) { callback in
           print("callback", callback)
         }
       

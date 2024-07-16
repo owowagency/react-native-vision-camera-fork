@@ -80,3 +80,23 @@ func RCTTempFilePath(_ ext: String, _ error: ErrorPointer) -> String? {
     .appending("/").appending(UUID().uuidString)
     .appending(".").appending(ext)
 }
+
+
+class RCTViewManager: NSObject {
+  
+  var methodQueue: DispatchQueue! { nil }
+  class func requiresMainQueueSetup() -> Bool { false }
+  func view() -> UIView! { nil }
+  
+  struct Bridge {
+    let uiManager = UIManager()
+  }
+  
+  struct UIManager {
+    func view(forReactTag: NSNumber) -> UIView! {
+      nil
+    }
+  }
+  
+  let bridge: Bridge = Bridge()
+}

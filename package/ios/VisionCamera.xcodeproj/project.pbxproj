@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B31481772C46547B00084A26 /* CameraViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B887518125E0102000DB86D6 /* CameraViewManager.swift */; };
+		B31481782C46558C00084A26 /* CameraView+TakePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B887517125E0102000DB86D6 /* CameraView+TakePhoto.swift */; };
+		B31481792C46559700084A26 /* CameraView+Focus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8A1AEC52AD7F08E00169C0D /* CameraView+Focus.swift */; };
 		B3AF8E862C410FB700CC198C /* ReactStubs.m in Sources */ = {isa = PBXBuildFile; fileRef = B3AF8E852C410FB700CC198C /* ReactStubs.m */; };
 		B3AF8E882C41159300CC198C /* ChunkedRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AF8E872C41159300CC198C /* ChunkedRecorder.swift */; };
 		B3AF8E892C41159300CC198C /* ChunkedRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AF8E872C41159300CC198C /* ChunkedRecorder.swift */; };
@@ -691,6 +694,8 @@
 				B3EF9F502C3FC31E00832EE7 /* AVCaptureVideoDataOutput+recommendedVideoSettings.swift in Sources */,
 				B3EF9F512C3FC31E00832EE7 /* AVCaptureDevice+minFocusDistance.swift in Sources */,
 				B3EF9F5B2C3FC33000832EE7 /* AVCaptureDevice.DeviceType+physicalDeviceDescriptor.swift in Sources */,
+				B31481792C46559700084A26 /* CameraView+Focus.swift in Sources */,
+				B31481772C46547B00084A26 /* CameraViewManager.swift in Sources */,
 				B3EF9F522C3FC31E00832EE7 /* AVCaptureDevice+physicalDevices.swift in Sources */,
 				B3EF9F532C3FC31E00832EE7 /* AVCaptureDevice+neutralZoom.swift in Sources */,
 				B3EF9F542C3FC31E00832EE7 /* AVCaptureDevice.Format+dimensions.swift in Sources */,
@@ -709,6 +714,7 @@
 				B3EF9F362C3FC05600832EE7 /* ResizeMode.swift in Sources */,
 				B3EF9F312C3FBFD500832EE7 /* AVAssetWriter.Status+descriptor.swift in Sources */,
 				B3EF9F292C3FBF2500832EE7 /* Torch.swift in Sources */,
+				B31481782C46558C00084A26 /* CameraView+TakePhoto.swift in Sources */,
 				B3EF9F2C2C3FBF4A00832EE7 /* EnumParserError.swift in Sources */,
 				B3EF9F272C3FBEF800832EE7 /* PixelFormat.swift in Sources */,
 				B3EF9F652C3FC43C00832EE7 /* CameraSession+Audio.swift in Sources */,

@@ -43,9 +43,9 @@ final class CameraViewManager: RCTViewManager {
   //       This means that any errors that occur in this function have to be delegated through
   //       the callback, but I'd prefer for them to throw for the original function instead.
   @objc
-  final func startRecording(_ node: NSNumber, options: NSDictionary, onRecordCallback: @escaping RCTResponseSenderBlock) {
+  final func startRecording(_ node: NSNumber, options: NSDictionary, filePath: NSString, onRecordCallback: @escaping RCTResponseSenderBlock) {
     let component = getCameraView(withTag: node)
-    component.startRecording(options: options, callback: onRecordCallback)
+    component.startRecording(options: options, filePath: filePath as String, callback: onRecordCallback)
   }
 
   @objc

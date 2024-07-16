@@ -49,8 +49,7 @@ class RecordingSession {
   /**
    Gets the file URL of the recorded video.
    */
-  var url: URL {
-    // FIXME:
+  var outputDiretory: URL {
     return recorder.outputURL
   }
 
@@ -72,14 +71,15 @@ class RecordingSession {
     return (lastWrittenTimestamp - startTimestamp).seconds
   }
 
-  init(url: URL,
+  init(outputDiretory: String,
        fileType: AVFileType,
        onChunkReady: @escaping ((ChunkedRecorder.Chunk) -> Void),
        completion: @escaping (RecordingSession, AVAssetWriter.Status, Error?) -> Void) throws {
     completionHandler = completion
 
     do {
-      recorder = try ChunkedRecorder(url: url.deletingLastPathComponent(), onChunkReady: onChunkReady)
+      let outputURL = URL(fileURLWithPath: outputDiretory)
+      recorder = try ChunkedRecorder(outputURL: outputURL, onChunkReady: onChunkReady)
       assetWriter = AVAssetWriter(contentType: UTType(fileType.rawValue)!)
       assetWriter.shouldOptimizeForNetworkUse = false
       assetWriter.outputFileTypeProfile = .mpeg4AppleHLS

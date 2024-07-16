@@ -15,6 +15,7 @@ extension CameraSession {
    Starts a video + audio recording with a custom Asset Writer.
    */
   func startRecording(options: RecordVideoOptions,
+                      filePath: String,
                       onVideoRecorded: @escaping (_ video: Video) -> Void,
                       onError: @escaping (_ error: CameraError) -> Void) {
     // Run on Camera Queue
@@ -70,7 +71,7 @@ extension CameraSession {
         } else {
           if status == .completed {
             // Recording was successfully saved
-            let video = Video(path: recordingSession.url.absoluteString,
+            let video = Video(path: recordingSession.outputDiretory.absoluteString,
                               duration: recordingSession.duration,
                               size: recordingSession.size ?? CGSize.zero)
             onVideoRecorded(video)
@@ -81,21 +82,20 @@ extension CameraSession {
         }
       }
 
-      // Create temporary file
-      let errorPointer = ErrorPointer(nilLiteral: ())
-      let fileExtension = options.fileType.descriptor ?? "mov"
-      guard let tempFilePath = RCTTempFilePath(fileExtension, errorPointer) else {
-        let message = errorPointer?.pointee?.description
-        onError(.capture(.createTempFileError(message: message)))
-        return
+      if !FileManager.default.fileExists(atPath: filePath) {
+        do {
+          try FileManager.default.createDirectory(atPath: filePath, withIntermediateDirectories: true)
+        } catch {
+          onError(.capture(.createRecordingDirectoryError(message: error.localizedDescription)))
+          return
+        }
       }
 
-      ReactLogger.log(level: .info, message: "Will record to temporary file: \(tempFilePath)")
-      let tempURL = URL(string: "file://\(tempFilePath)")!
+      ReactLogger.log(level: .info, message: "Will record to temporary file: \(filePath)")
 
       do {
         // Create RecordingSession for the temp file
-        let recordingSession = try RecordingSession(url: tempURL,
+        let recordingSession = try RecordingSession(outputDiretory: filePath,
                                                     fileType: options.fileType,
                                                     onChunkReady: onChunkReady,
                                                     completion: onFinish)

@@ -27,8 +27,8 @@ class ChunkedRecorder: NSObject {
   
   private var chunkIndex: UInt64 = 0
   
-  init(url: URL, onChunkReady: @escaping ((Chunk) -> Void)) throws {
-    outputURL = url
+  init(outputURL: URL, onChunkReady: @escaping ((Chunk) -> Void)) throws {
+    self.outputURL = outputURL
     self.onChunkReady = onChunkReady
     guard FileManager.default.fileExists(atPath: outputURL.path) else {
       throw CameraError.unknown(message: "output directory does not exist at: \(outputURL.path)", cause: nil)
