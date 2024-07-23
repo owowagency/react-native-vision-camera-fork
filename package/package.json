@@ -1,6 +1,6 @@
 {
   "name": "react-native-vision-camera",
-  "version": "3.8.2",
+  "version": "3.9.2",
   "description": "A powerful, high-performance React Native Camera library.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -49,26 +49,33 @@
     "postpack": "rm ./README.md"
   },
   "keywords": [
-    "react-native",
-    "ios",
-    "android",
-    "camera",
-    "vision",
-    "native",
-    "module",
     "react",
+    "native",
+    "camera",
+    "react-native",
+    "react-native-camera",
+    "vision",
+    "javascript",
+    "typescript",
+    "android",
+    "ios",
+    "library",
+    "instagram",
+    "snapchat",
     "ai",
-    "ar",
-    "qr",
-    "qr-code",
-    "barcode",
     "scanner",
+    "qrcode",
+    "barcode",
+    "qr-code",
+    "jsi",
+    "worklet",
+    "module",
     "frame",
     "processing",
     "realtime"
   ],
   "repository": "https://github.com/mrousavy/react-native-vision-camera",
-  "author": "Marc Rousavy <marcrousavy@hotmail.com> (https://github.com/mrousavy)",
+  "author": "Marc Rousavy <me@mrousavy.com> (https://github.com/mrousavy)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/mrousavy/react-native-vision-camera/issues"
@@ -159,5 +166,6 @@
         }
       ]
     ]
-  }
+  },
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }
