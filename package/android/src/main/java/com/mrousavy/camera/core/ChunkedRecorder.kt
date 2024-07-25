@@ -83,7 +83,7 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
   }
 
   // Muxer specific
-  private class MuxerContext(val muxer: MediaMuxer, val filepath: File, val chunkIndex: Int, startTimeUs: Long, encodedFormat: MediaFormat) {
+  private class MuxerContext(val muxer: MediaMuxer, val filepath: File, val chunkIndex: Int, startTimeUs: Long, encodedFormat: MediaFormat, val callbacks: CameraSession.Callback,) {
     val videoTrack: Int = muxer.addTrack(encodedFormat)
     val startTimeUs: Long = startTimeUs
 
@@ -95,16 +95,14 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
     fun finish() {
       muxer.stop()
       muxer.release()
+      callbacks.onVideoChunkReady(filepath, chunkIndex)
     }
   }
 
   private var muxerContext: MuxerContext? = null
 
   private fun createNextMuxer(bufferInfo: BufferInfo) {
-    muxerContext?.let {
-      it.finish()
-      this.callbacks.onVideoChunkReady(it.filepath, it.chunkIndex)
-    }
+    muxerContext?.finish()
     chunkIndex++
 
     val newFileName = "$chunkIndex.mp4"
@@ -116,7 +114,7 @@ class ChunkedRecordingManager(private val encoder: MediaCodec, private val outpu
     )
     muxer.setOrientationHint(orientationHint)
     muxerContext = MuxerContext(
-      muxer, newOutputFile, chunkIndex, bufferInfo.presentationTimeUs, this.encodedFormat!!
+        muxer, newOutputFile, chunkIndex, bufferInfo.presentationTimeUs, this.encodedFormat!!, this.callbacks
     )
   }
 
