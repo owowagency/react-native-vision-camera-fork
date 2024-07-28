@@ -11,7 +11,7 @@ import AVFoundation
 
 
 class ChunkedRecorder: NSObject {
-  
+
   enum ChunkType {
     case initialization
     case data(index: UInt64, duration: CMTime?)
@@ -21,12 +21,12 @@ class ChunkedRecorder: NSObject {
     let url: URL
     let type: ChunkType
   }
-  
+
   let outputURL: URL
   let onChunkReady: ((Chunk) -> Void)
-  
+
   private var chunkIndex: UInt64 = 0
-  
+
   init(outputURL: URL, onChunkReady: @escaping ((Chunk) -> Void)) throws {
     self.outputURL = outputURL
     self.onChunkReady = onChunkReady
@@ -34,16 +34,16 @@ class ChunkedRecorder: NSObject {
       throw CameraError.unknown(message: "output directory does not exist at: \(outputURL.path)", cause: nil)
     }
   }
-  
+
 }
 
 extension ChunkedRecorder: AVAssetWriterDelegate {
-  
-  func assetWriter(_ writer: AVAssetWriter, 
+
+  func assetWriter(_ writer: AVAssetWriter,
                    didOutputSegmentData segmentData: Data,
                    segmentType: AVAssetSegmentType,
                    segmentReport: AVAssetSegmentReport?) {
-    
+
     switch segmentType {
     case .initialization:
       saveInitSegment(segmentData)
@@ -53,13 +53,13 @@ extension ChunkedRecorder: AVAssetWriterDelegate {
       fatalError("Unknown AVAssetSegmentType!")
     }
   }
-  
+
   private func saveInitSegment(_ data: Data) {
     let url = outputURL.appendingPathComponent("init.mp4")
     save(data: data, url: url)
     onChunkReady(url: url, type: .initialization)
   }
-  
+
   private func saveSegment(_ data: Data, report: AVAssetSegmentReport?) {
     let name = "\(chunkIndex).mp4"
     let url = outputURL.appendingPathComponent(name)
@@ -72,7 +72,7 @@ extension ChunkedRecorder: AVAssetWriterDelegate {
     onChunkReady(url: url, type: .data(index: chunkIndex, duration: duration))
     chunkIndex += 1
   }
-  
+
   private func save(data: Data, url: URL) {
     do {
       try data.write(to: url)
@@ -80,9 +80,9 @@ extension ChunkedRecorder: AVAssetWriterDelegate {
       ReactLogger.log(level: .error, message: "Unable to write \(url): \(error.localizedDescription)")
     }
   }
-  
+
   private func onChunkReady(url: URL, type: ChunkType) {
     onChunkReady(Chunk(url: url, type: type))
   }
-  
+
 }

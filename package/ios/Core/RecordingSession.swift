@@ -84,7 +84,7 @@ class RecordingSession {
       assetWriter.shouldOptimizeForNetworkUse = false
       assetWriter.outputFileTypeProfile = .mpeg4AppleHLS
       assetWriter.preferredOutputSegmentInterval = CMTime(seconds: 6, preferredTimescale: 1)
-      
+
       /*
         Apple HLS fMP4 does not have an Edit List Box ('elst') in an initialization segment to remove
         audio priming duration which advanced audio formats like AAC have, since the sample tables
@@ -95,7 +95,7 @@ class RecordingSession {
       */
       let startTimeOffset = CMTime(value: 10, timescale: 1)
       assetWriter.initialSegmentStartTime = startTimeOffset
-      
+
       assetWriter.delegate = recorder
     } catch let error as NSError {
       throw CameraError.capture(.createRecorderError(message: error.description))
