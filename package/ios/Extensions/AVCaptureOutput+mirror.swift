@@ -32,28 +32,36 @@ extension AVCaptureOutput {
   func setOrientation(_ orientation: Orientation) {
     // Set orientation for each connection
     for connection in connections {
-      #if swift(>=5.9)
-        if #available(iOS 17.0, *) {
-          // Camera Sensors are always in landscape rotation (90deg).
-          // We are setting the target rotation here, so we need to rotate by landscape once.
-          let cameraOrientation = orientation.rotateBy(orientation: .landscapeLeft)
-          let degrees = cameraOrientation.toDegrees()
-
-          // TODO: Don't rotate the video output because it adds overhead. Instead just use EXIF flags for the .mp4 file if recording.
-          //       Does that work when we flip the camera?
-          if connection.isVideoRotationAngleSupported(degrees) {
-            connection.videoRotationAngle = degrees
-          }
-        } else {
-          if connection.isVideoOrientationSupported {
-            connection.videoOrientation = orientation.toAVCaptureVideoOrientation()
-          }
-        }
-      #else
-        if connection.isVideoOrientationSupported {
-          connection.videoOrientation = orientation.toAVCaptureVideoOrientation()
-        }
-      #endif
+      connection.setOrientation(orientation)
     }
+  }
+}
+
+
+
+extension AVCaptureConnection {
+  func setOrientation(_ orientation: Orientation) {
+    #if swift(>=5.9)
+      if #available(iOS 17.0, *) {
+        // Camera Sensors are always in landscape rotation (90deg).
+        // We are setting the target rotation here, so we need to rotate by landscape once.
+        let cameraOrientation = orientation.rotateBy(orientation: .landscapeLeft)
+        let degrees = cameraOrientation.toDegrees()
+
+        // TODO: Don't rotate the video output because it adds overhead. Instead just use EXIF flags for the .mp4 file if recording.
+        //       Does that work when we flip the camera?
+        if isVideoRotationAngleSupported(degrees) {
+          videoRotationAngle = degrees
+        }
+      } else {
+        if isVideoOrientationSupported {
+          videoOrientation = orientation.toAVCaptureVideoOrientation()
+        }
+      }
+    #else
+      if isVideoOrientationSupported {
+        videoOrientation = orientation.toAVCaptureVideoOrientation()
+      }
+    #endif
   }
 }

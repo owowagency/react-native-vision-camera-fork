@@ -113,5 +113,19 @@ class ViewController: UIViewController {
     }
   }
   
+  override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
+    switch UIDevice.current.orientation {
+    case .landscapeLeft:
+      cameraView.orientation = "landscape-right"
+    case .landscapeRight:
+      cameraView.orientation = "landscape-left"
+    default:
+      cameraView.orientation = "portrait"
+    }
+    
+    cameraView.didSetProps([])
+    super.viewWillTransition(to: size, with: coordinator)
+  }
+  
 }
 

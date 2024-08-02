@@ -21,6 +21,8 @@ protocol CameraSessionDelegate: AnyObject {
    Called when the [CameraSession] successfully initializes
    */
   func onSessionInitialized()
+  
+  func onCameraConfigurationChanged(_ configuration: CameraConfiguration?, _ difference: CameraConfiguration.Difference?)
   /**
    Called when the [CameraSession] starts streaming frames. (isActive=true)
    */

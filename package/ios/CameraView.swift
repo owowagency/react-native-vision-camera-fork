@@ -303,6 +303,15 @@ public final class CameraView: UIView, CameraSessionDelegate {
     }
     onInitialized([:])
   }
+  
+  func onCameraConfigurationChanged(_ configuration: CameraConfiguration?, _ difference: CameraConfiguration.Difference?) {
+    guard let configuration, let difference else { return }
+    
+    if difference.orientationChanged, let connection = previewView.videoPreviewLayer.connection {
+      let videoPreviewLayer = previewView.videoPreviewLayer
+      connection.setOrientation(configuration.orientation)
+    }
+  }
 
   func onCameraStarted() {
     ReactLogger.log(level: .info, message: "Camera started!")
