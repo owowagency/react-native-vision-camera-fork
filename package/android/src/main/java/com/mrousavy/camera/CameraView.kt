@@ -72,6 +72,10 @@ class CameraView(context: Context) :
   var zoom: Float = 1f // in "factor"
   var exposure: Double = 1.0
   var orientation: Orientation = Orientation.PORTRAIT
+      set(value) {
+        field = value
+        previewView.orientation = value
+      }
   var enableZoomGesture = false
     set(value) {
       field = value

@@ -10,6 +10,7 @@ import com.mrousavy.camera.types.CodeScannerOptions
 import com.mrousavy.camera.types.Orientation
 import com.mrousavy.camera.types.PixelFormat
 import com.mrousavy.camera.types.ResizeMode
+import android.util.Log
 import com.mrousavy.camera.types.Torch
 import com.mrousavy.camera.types.VideoStabilizationMode
 
@@ -182,6 +183,7 @@ class CameraViewManager : ViewGroupManager<CameraView>() {
   fun setOrientation(view: CameraView, orientation: String?) {
     if (orientation != null) {
       val newMode = Orientation.fromUnionValue(orientation)
+      Log.i(TAG, "Orientation set to: $newMode")
       view.orientation = newMode
     } else {
       view.orientation = Orientation.PORTRAIT

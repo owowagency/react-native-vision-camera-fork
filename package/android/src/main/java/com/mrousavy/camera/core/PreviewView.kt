@@ -36,6 +36,13 @@ class PreviewView(context: Context, callback: SurfaceHolder.Callback) :
         updateLayout()
       }
     }
+  var orientation: Orientation = Orientation.PORTRAIT
+      set(value) {
+        if (field != value) {
+          Log.i(TAG, "View Orientation changed: $field -> $value")
+          field = value
+        }
+      }
   private var inputOrientation: Orientation = Orientation.LANDSCAPE_LEFT
     set(value) {
       if (field != value) {
@@ -101,6 +108,11 @@ class PreviewView(context: Context, callback: SurfaceHolder.Callback) :
   }
 
   private fun getSize(contentSize: Size, containerSize: Size, resizeMode: ResizeMode): Size {
+    var contentSize = contentSize
+    // Swap dimensions if orientation is landscape
+    if (orientation.isLandscape()) {
+      contentSize = Size(contentSize.height, contentSize.width)
+    }
     val contentAspectRatio = contentSize.width.toDouble() / contentSize.height
     val containerAspectRatio = containerSize.width.toDouble() / containerSize.height
     if (!(contentAspectRatio > 0 && containerAspectRatio > 0)) {
@@ -128,11 +140,11 @@ class PreviewView(context: Context, callback: SurfaceHolder.Callback) :
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-    val viewSize = Size(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
+    val measuredViewSize = Size(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
     val surfaceSize = size.rotatedBy(inputOrientation)
-    val fittedSize = getSize(surfaceSize, viewSize, resizeMode)
+    val fittedSize = getSize(surfaceSize, measuredViewSize, resizeMode)
 
-    Log.i(TAG, "PreviewView is $viewSize, rendering $surfaceSize content ($inputOrientation). Resizing to: $fittedSize ($resizeMode)")
+    Log.i(TAG, "PreviewView is $measuredViewSize rendering $surfaceSize orientation ($orientation). Resizing to: $fittedSize ($resizeMode)")
     setMeasuredDimension(fittedSize.width, fittedSize.height)
   }
 

@@ -312,7 +312,7 @@ class CameraSession(private val context: Context, private val cameraManager: Cam
         enableHdr
       )
       outputs.add(output)
-      // Size is usually landscape, so we flip it here
+
       previewView?.setSurfaceSize(size.width, size.height, deviceDetails.sensorOrientation)
     }
 
