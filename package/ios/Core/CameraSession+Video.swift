@@ -18,6 +18,8 @@ extension CameraSession {
                       filePath: String,
                       onVideoRecorded: @escaping (_ video: Video) -> Void,
                       onError: @escaping (_ error: CameraError) -> Void) {
+    
+    lockCurrentExposure(for: captureSession)
     // Run on Camera Queue
     CameraQueues.cameraQueue.async {
       let start = DispatchTime.now()
@@ -190,5 +192,36 @@ extension CameraSession {
         return nil
       }
     }
+  }
+  
+  func lockCurrentExposure(for session: AVCaptureSession) {
+      guard let captureDevice = AVCaptureDevice.default(for: .video) else {
+          print("No capture device available")
+          return
+      }
+
+      do {
+          // Lock the device for configuration
+          try captureDevice.lockForConfiguration()
+
+          // Get the current exposure duration and ISO
+          let currentExposureDuration = captureDevice.exposureDuration
+          let currentISO = captureDevice.iso
+
+          // Check if the device supports custom exposure settings
+          if captureDevice.isExposureModeSupported(.custom) {
+              // Lock the current exposure and ISO by setting custom exposure mode
+              captureDevice.setExposureModeCustom(duration: currentExposureDuration, iso: currentISO, completionHandler: nil)
+              ReactLogger.log(level: .info, message: "Exposure and ISO locked at current values")
+          } else {
+              ReactLogger.log(level: .info, message:"Custom exposure mode not supported")
+          }
+
+          // Unlock the device after configuration
+          captureDevice.unlockForConfiguration()
+
+      } catch {
+        ReactLogger.log(level: .warning, message:"Error locking exposure: \(error)")
+      }
   }
 }
