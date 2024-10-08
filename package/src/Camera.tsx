@@ -319,6 +319,22 @@ export class Camera extends React.PureComponent<CameraProps, CameraState> {
       throw tryParseNativeCameraError(e)
     }
   }
+
+  public async lockCurrentExposure(): Promise<void> {
+    try {
+      return await CameraModule.lockCurrentExposure(this.handle)
+    } catch (e) {
+      throw tryParseNativeCameraError(e)
+    }
+  }
+
+  public async unlockCurrentExposure(): Promise<void> {
+    try {
+      return await CameraModule.unlockCurrentExposure(this.handle)
+    } catch (e) {
+      throw tryParseNativeCameraError(e)
+    }
+  }
   //#endregion
 
   //#region Static Functions (NativeModule)

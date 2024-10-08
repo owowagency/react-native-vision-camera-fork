@@ -86,5 +86,13 @@ RCT_EXTERN_METHOD(focus
                   : (NSDictionary*)point resolve
                   : (RCTPromiseResolveBlock)resolve reject
                   : (RCTPromiseRejectBlock)reject);
+RCT_EXTERN_METHOD(lockCurrentExposure
+                  : (nonnull NSNumber*)node resolve
+                  : (RCTPromiseResolveBlock)resolve reject
+                  : (RCTPromiseRejectBlock)reject);
+RCT_EXTERN_METHOD(unlockCurrentExposure
+                  : (nonnull NSNumber*)node resolve
+                  : (RCTPromiseResolveBlock)resolve reject
+                  : (RCTPromiseRejectBlock)reject);
 
 @end
