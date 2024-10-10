@@ -34,7 +34,7 @@ extension CameraSession {
       }
 
       let enableAudio = self.configuration?.audio != .disabled
-      
+
       // Callback for when new chunks are ready
       let onChunkReady: (ChunkedRecorder.Chunk) -> Void = { chunk in
         guard let delegate = self.delegate else {
@@ -191,7 +191,7 @@ extension CameraSession {
       }
     }
   }
-  
+
   func lockCurrentExposure(promise: Promise) {
     CameraQueues.cameraQueue.async {
       withPromise(promise) {
@@ -199,15 +199,19 @@ extension CameraSession {
           print("No capture device available")
           return
         }
-        
+
+        guard captureDevice.isExposureModeSupported(.custom) else {
+          ReactLogger.log(level: .info, message: "Custom exposure mode not supported")
+          return
+        }
         do {
           // Lock the device for configuration
           try captureDevice.lockForConfiguration()
-          
+
           // Get the current exposure duration and ISO
           let currentExposureDuration = captureDevice.exposureDuration
           let currentISO = captureDevice.iso
-          
+
           // Check if the device supports custom exposure settings
           if captureDevice.isExposureModeSupported(.custom) {
             // Lock the current exposure and ISO by setting custom exposure mode
@@ -216,19 +220,19 @@ extension CameraSession {
           } else {
             ReactLogger.log(level: .info, message:"Custom exposure mode not supported")
           }
-          
+
           // Unlock the device after configuration
           captureDevice.unlockForConfiguration()
-          
+
         } catch {
           ReactLogger.log(level: .warning, message:"Error locking exposure: \(error)")
         }
-        
+
         return nil
       }
     }
   }
-  
+
   func unlockCurrentExposure(promise: Promise) {
     CameraQueues.cameraQueue.async {
       withPromise(promise) {
@@ -236,7 +240,7 @@ extension CameraSession {
           print("No capture device available")
           return
         }
-        
+
         do {
           if captureDevice.isExposureModeSupported(.autoExpose) {
             try captureDevice.lockForConfiguration()
@@ -246,7 +250,7 @@ extension CameraSession {
         } catch {
           ReactLogger.log(level: .warning, message:"Error unlocking exposure: \(error)")
         }
-        
+
         return nil
       }
     }
