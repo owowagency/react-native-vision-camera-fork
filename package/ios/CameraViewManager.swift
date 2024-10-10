@@ -110,6 +110,18 @@ final class CameraViewManager: RCTViewManager {
       resolve(result.descriptor)
     }
   }
+  
+  @objc
+  final func lockCurrentExposure(_ node: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    let component = getCameraView(withTag: node)
+    component.lockExposure(promise: Promise(resolver: resolve, rejecter: reject))
+  }
+  
+  @objc
+  final func unlockCurrentExposure(_ node: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    let component = getCameraView(withTag: node)
+    component.unlockExposure(promise: Promise(resolver: resolve, rejecter: reject))
+  }
 
   // MARK: Private
 

@@ -50,4 +50,12 @@ extension CameraView: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAud
   func resumeRecording(promise: Promise) {
     cameraSession.resumeRecording(promise: promise)
   }
+  
+  func lockExposure(promise: Promise) {
+    cameraSession.lockCurrentExposure(promise: promise)
+  }
+  
+  func unlockExposure(promise: Promise) {
+    cameraSession.unlockCurrentExposure(promise: promise)
+  }
 }
