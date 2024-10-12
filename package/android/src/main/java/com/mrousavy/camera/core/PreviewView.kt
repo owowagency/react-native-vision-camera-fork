@@ -1,6 +1,7 @@
 package com.mrousavy.camera.core
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.content.Context
 import android.graphics.Point
 import android.util.Log
@@ -97,22 +98,14 @@ class PreviewView(context: Context, callback: SurfaceHolder.Callback) :
     }
   }
 
-  override fun requestLayout() {
-    super.requestLayout()
-    // Manually trigger measure & layout, as RN on Android skips those.
-    // See this issue: https://github.com/facebook/react-native/issues/17968#issuecomment-721958427
-    post {
-      measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
-      layout(left, top, right, bottom)
-    }
-  }
-
   private fun getSize(contentSize: Size, containerSize: Size, resizeMode: ResizeMode): Size {
     var contentSize = contentSize
-    // Swap dimensions if orientation is landscape
-    if (orientation.isLandscape()) {
+    var androidOrientation = context.getResources().getConfiguration().orientation;
+
+    if (androidOrientation == Configuration.ORIENTATION_LANDSCAPE) {
       contentSize = Size(contentSize.height, contentSize.width)
     }
+
     val contentAspectRatio = contentSize.width.toDouble() / contentSize.height
     val containerAspectRatio = containerSize.width.toDouble() / containerSize.height
     if (!(contentAspectRatio > 0 && containerAspectRatio > 0)) {
